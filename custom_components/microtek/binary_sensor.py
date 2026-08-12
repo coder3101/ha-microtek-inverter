@@ -9,7 +9,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import BINARY_SENSOR_KEYS, DOMAIN
+from .const import BINARY_SENSORS, DOMAIN
 from .coordinator import MicrotekDataUpdateCoordinator
 
 
@@ -19,7 +19,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator: MicrotekDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities(MicrotekBinarySensor(coordinator, key) for key in BINARY_SENSOR_KEYS)
+    async_add_entities(MicrotekBinarySensor(coordinator, key) for key in BINARY_SENSORS)
 
 
 class MicrotekBinarySensor(CoordinatorEntity[MicrotekDataUpdateCoordinator], BinarySensorEntity):
@@ -35,6 +35,7 @@ class MicrotekBinarySensor(CoordinatorEntity[MicrotekDataUpdateCoordinator], Bin
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{coordinator.device_id}_{key}"
         self._attr_name = key.replace("_", " ").title()
+        self._attr_icon = BINARY_SENSORS.get(key, "mdi:information-outline")
         if key.endswith("_flt"):
             self._attr_device_class = "problem"
         elif key == "mains":

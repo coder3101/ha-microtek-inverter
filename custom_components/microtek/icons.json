@@ -1,0 +1,47 @@
+{
+  "entity": {
+    "sensor": {
+      "microtek_inverter_input_voltage": { "icon": "mdi:transmission-tower" },
+      "microtek_inverter_output_voltage": { "icon": "mdi:home-lightning-bolt" },
+      "microtek_inverter_battery_voltage": { "icon": "mdi:battery" },
+      "microtek_inverter_charge_current": { "icon": "mdi:battery-charging-outline" },
+      "microtek_inverter_discharge_current": { "icon": "mdi:battery-arrow-down-outline" },
+      "microtek_inverter_frequency": { "icon": "mdi:sine-wave" },
+      "microtek_inverter_load": { "icon": "mdi:gauge" },
+      "microtek_inverter_wifi_signal": { "icon": "mdi:wifi" },
+      "microtek_inverter_charge_time": { "icon": "mdi:timelapse" },
+      "microtek_inverter_backup_time": { "icon": "mdi:history" },
+      "microtek_inverter_inverter_mode": { "icon": "mdi:power-settings" },
+      "microtek_inverter_charge_status": { "icon": "mdi:battery-charging" },
+      "microtek_inverter_battery_type": { "icon": "mdi:battery" },
+      "microtek_inverter_core_firmware": { "icon": "mdi:chip" },
+      "microtek_inverter_firmware_version": { "icon": "mdi:chip" },
+      "microtek_inverter_flash_version": { "icon": "mdi:chip" }
+    },
+    "binary_sensor": {
+      "microtek_inverter_pow": { "icon": "mdi:power" },
+      "microtek_inverter_ups": { "icon": "mdi:power-plug" },
+      "microtek_inverter_mains": { "icon": "mdi:power-plug-outline" },
+      "microtek_inverter_fan": { "icon": "mdi:fan" },
+      "microtek_inverter_buzz": { "icon": "mdi:bell" },
+      "microtek_inverter_highpwr": { "icon": "mdi:rocket-launch" },
+      "microtek_inverter_vacation": { "icon": "mdi:palm-tree" },
+      "microtek_inverter_mainscut": { "icon": "mdi:power-plug-off" },
+      "microtek_inverter_turbochrgsts": { "icon": "mdi:battery-charging-high" },
+      "microtek_inverter_activated": { "icon": "mdi:check-decagram" },
+      "microtek_inverter_wconn": { "icon": "mdi:wifi" },
+      "microtek_inverter_bconn": { "icon": "mdi:bluetooth" },
+      "microtek_inverter_cbtripwarn": { "icon": "mdi:alert" },
+      "microtek_inverter_wlevelwarn": { "icon": "mdi:alert" },
+      "microtek_inverter_lowbatwarn": { "icon": "mdi:battery-alert" },
+      "microtek_inverter_chrgrelay_flt": { "icon": "mdi:alert" },
+      "microtek_inverter_outvolt_flt": { "icon": "mdi:alert" },
+      "microtek_inverter_batvolt_flt": { "icon": "mdi:battery-alert-variant" },
+      "microtek_inverter_backfeed_flt": { "icon": "mdi:alert" },
+      "microtek_inverter_trans_f_temp_flt": { "icon": "mdi:thermometer-alert" },
+      "microtek_inverter_mosfet_temp_flt": { "icon": "mdi:thermometer-alert" },
+      "microtek_inverter_shrtckt_flt": { "icon": "mdi:alert" },
+      "microtek_inverter_overload_flt": { "icon": "mdi:alert" }
+    }
+  }
+}
