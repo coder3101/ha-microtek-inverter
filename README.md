@@ -35,7 +35,7 @@ local Wi-Fi.
 1. Open your Home Assistant UI.
 2. Go to **HACS** → three dots (top right) → **Custom repositories**.
 3. Under *Add custom repository*, enter:
-   - **URL:** `https://github.com/coder3101/ha-microtek`
+   - **URL:** `https://github.com/coder3101/ha-microtek-inverter`
    - **Category:** Integration
 4. Click **Add**.
 5. Search for **Microtek** in HACS and select it.
