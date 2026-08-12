@@ -1,0 +1,32 @@
+# Microtek Inverter — clock/countdown template sensors
+#
+# Add this under the `template:` key in your configuration.yaml (merge it in),
+# restart HA, then the two clock sensors appear:
+#   sensor.microtek_charge_time
+#   sensor.microtek_backup_time
+#
+# They format the inverter's raw charge/backup counter as HH:MM:SS so you can
+# show it as a clock/timer on the dashboard.
+#
+# UNIT NOTE: the raw value from the inverter is assumed to be MINUTES. If your
+# device reports SECONDS instead, remove/or change the two `* 60` multipliers
+# (i.e. `X * 1`).
+template:
+  - sensor:
+      - name: "Microtek Charge Time"
+        unique_id: microtek_charge_time_clock
+        icon: mdi:timelapse
+        state: >
+          {% set raw = states('sensor.microtek_inverter_charge_time') | int(0) %}
+          {% set t = raw * 60 %}
+          {% set h = t // 3600 %}{% set m = (t % 3600) // 60 %}{% set s = t % 60 %}
+          {{ "%02d:%02d:%02d" | format(h, m, s) }}
+
+      - name: "Microtek Backup Time"
+        unique_id: microtek_backup_time_clock
+        icon: mdi:history
+        state: >
+          {% set raw = states('sensor.microtek_inverter_backup_time') | int(0) %}
+          {% set t = raw * 60 %}
+          {% set h = t // 3600 %}{% set m = (t % 3600) // 60 %}{% set s = t % 60 %}
+          {{ "%02d:%02d:%02d" | format(h, m, s) }}

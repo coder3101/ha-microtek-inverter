@@ -1,0 +1,89 @@
+# Microtek Inverter — example Lovelace dashboard
+# Import in HA: Settings -> Dashboards -> ... -> Import file -> select this .yaml
+#
+# NOTE: entity_ids below assume your integration device is named "Microtek Inverter".
+# If your entity_ids differ (e.g. the device got renamed), find them under
+# Settings -> Devices & Services -> Microtek Inverter and adjust the references.
+#
+# "Microtek State" (template sensor) must exist for the clock card to show;
+# see microtek_template_sensors.yaml in this folder.
+title: Microtek Inverter
+views:
+  - title: Overview
+    path: microtek
+    cards:
+      - type: gauge
+        name: Input Voltage
+        entity: sensor.microtek_inverter_input_voltage
+        min: 150
+        max: 270
+        unit: V
+        severity:
+          green: 200
+          yellow: 180
+          red: 130
+
+      - type: gauge
+        name: Battery Voltage
+        entity: sensor.microtek_inverter_battery_voltage
+        min: 10
+        max: 16
+        unit: V
+        severity:
+          green: 13
+          yellow: 11.5
+          red: 10
+
+      - type: gauge
+        name: Load
+        entity: sensor.microtek_inverter_load
+        min: 0
+        max: 100
+        unit: "%"
+        severity:
+          green: 40
+          yellow: 70
+          red: 90
+
+      - type: gauge
+        name: Frequency
+        entity: sensor.microtek_inverter_frequency
+        min: 45
+        max: 55
+        unit: Hz
+        severity:
+          green: 49.9
+          yellow: 49
+          red: 45
+
+      - type: sensor
+        name: Charge Time
+        entity: sensor.microtek_charge_time
+        icon: mdi:timelapse
+
+      - type: sensor
+        name: Backup Time
+        entity: sensor.microtek_backup_time
+        icon: mdi:history
+
+      - type: entities
+        title: Power & Output
+        entities:
+          - sensor.microtek_inverter_input_voltage
+          - sensor.microtek_inverter_output_voltage
+          - sensor.microtek_inverter_frequency
+          - sensor.microtek_inverter_battery_voltage
+          - sensor.microtek_inverter_charge_current
+          - sensor.microtek_inverter_discharge_current
+          - sensor.microtek_inverter_load
+
+      - type: entities
+        title: Status & Faults
+        entities:
+          - binary_sensor.microtek_inverter_pow
+          - binary_sensor.microtek_inverter_ups
+          - binary_sensor.microtek_inverter_mains
+          - binary_sensor.microtek_inverter_fan
+          - binary_sensor.microtek_inverter_vacation
+          - binary_sensor.microtek_inverter_lowbatwarn
+          - binary_sensor.microtek_inverter_overload_flt

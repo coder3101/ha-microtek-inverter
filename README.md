@@ -89,6 +89,18 @@ logger:
     custom_components.microtek: debug
 ```
 
+## Example dashboard
+
+A ready-to-use Lovelace dashboard (gauge cards for voltage, load, frequency) and
+clock/timer template sensors for charge & backup time live in
+[`examples/`](examples/):
+
+- `examples/microtek_dashboard.yaml` — import via **Settings → Dashboards → … → Import file**
+- `examples/microtek_template_sensors.yaml` — merge under `template:` in `configuration.yaml`
+
+Entity ids in the example assume your device is named **Microtek Inverter**
+(`sensor.microtek_inverter_*`); adjust if yours differ.
+
 ## License
 
 Apache-2.0
