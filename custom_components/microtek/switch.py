@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from homeassistant.components.switch import SwitchEntity
@@ -16,6 +17,11 @@ from .const import DOMAIN, SWITCH_KEYS
 from .coordinator import MicrotekDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
+
+# The inverter applies /sds writes with a short delay; refresh must wait long
+# enough for the new value to appear in /gds, otherwise the stale pre-write
+# value reverts the optimistic switch state.
+WRITE_SETTLE_SECONDS = 6
 
 
 async def async_setup_entry(
@@ -73,4 +79,6 @@ class MicrotekSwitch(CoordinatorEntity[MicrotekDataUpdateCoordinator], SwitchEnt
             if old is not None:
                 state[self._key] = old
             self.async_write_ha_state()
+            return
+        await asyncio.sleep(WRITE_SETTLE_SECONDS)
         await self.coordinator.async_refresh()
