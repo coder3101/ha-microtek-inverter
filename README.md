@@ -151,6 +151,8 @@ switches + mode select for control) and clock/timer template sensors for charge
 Entity ids in the example assume your device is named **Microtek Inverter**
 (`sensor.microtek_inverter_*`); adjust if yours differ.
 
+![Microtek Inverter dashboard](assets/microtek-dashboard.png)
+
 ## License
 
 Apache-2.0
