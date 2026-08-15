@@ -34,6 +34,7 @@ class MicrotekModeSelect(CoordinatorEntity[MicrotekDataUpdateCoordinator], Selec
     _attr_name = "Inverter mode"
     _attr_icon = "mdi:power-settings"
     _attr_options = list(MODE_SELECT_OPTIONS.values())
+    _attr_entity_registry_enabled_default = False
 
     def __init__(self, coordinator: MicrotekDataUpdateCoordinator) -> None:
         super().__init__(coordinator)

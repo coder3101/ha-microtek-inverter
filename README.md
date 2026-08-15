@@ -51,7 +51,7 @@ entity id is `<device_name>_<key>` (e.g. `sensor.microtek_inverter_involt` →
 | `activated`, `wConn`, `bConn` | binary | – | connectivity state |
 | `*_flt` / `*_warn` | binary | – | fault/overload flags (0 = none) |
 | `ups`, `buzz`, `highpwr`, `vacation`, `mainscut`, `pow` | switch | – | toggle the corresponding flag via the inverter |
-| `mode` | select | – | set inverter mode (0–8) |
+| `mode` | select | – | set inverter mode (0–8, disabled by default) |
 
 ## Tested on
 
