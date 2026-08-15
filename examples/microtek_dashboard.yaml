@@ -10,6 +10,14 @@
 #   * backup_time  -> MINUTES of backup remaining
 #   (voltage in V, currents in A, frequency in Hz, rssi in dBm)
 #
+# ENTITIES DISABLED BY DEFAULT (enable in the entity registry if you want them):
+#   sensor.microtek_inverter_wifi_signal
+#   sensor.microtek_inverter_inverter_mode (raw mode value)
+#   sensor.microtek_inverter_charge_status
+#   sensor.microtek_inverter_battery_type
+#   sensor.microtek_inverter_core_firmware / _firmware_version / _flash_version
+#   select.microtek_inverter_mode (mode control)
+#
 # "Microtek State" (template sensor) must exist for the clock card to show;
 # see microtek_template_sensors.yaml in this folder.
 title: Microtek Inverter
@@ -17,91 +25,115 @@ views:
   - title: Overview
     path: microtek
     cards:
-      - type: gauge
-        name: Input Voltage
-        entity: sensor.microtek_inverter_input_voltage
-        min: 150
-        max: 270
-        unit: V
-        severity:
-          green: 200
-          yellow: 180
-          red: 130
-
-      - type: gauge
-        name: Battery Voltage
-        entity: sensor.microtek_inverter_battery_voltage
-        min: 10
-        max: 16
-        unit: V
-        severity:
-          green: 13
-          yellow: 11.5
-          red: 10
-
-      - type: gauge
-        name: Load
-        entity: sensor.microtek_inverter_load
-        min: 0
-        max: 100
-        unit: "%"
-        severity:
-          green: 40
-          yellow: 70
-          red: 90
-
-      - type: gauge
-        name: Frequency
-        entity: sensor.microtek_inverter_frequency
-        min: 45
-        max: 55
-        unit: Hz
-        severity:
-          green: 49.9
-          yellow: 49
-          red: 45
-
-      - type: sensor
-        name: Charge Time (min)
-        entity: sensor.microtek_charge_time
-        icon: mdi:timelapse
-
-      - type: sensor
-        name: Backup Time (min)
-        entity: sensor.microtek_backup_time
-        icon: mdi:history
+      - type: horizontal-stack
+        cards:
+          - type: gauge
+            name: Input Voltage
+            entity: sensor.microtek_inverter_input_voltage
+            min: 150
+            max: 270
+            unit: V
+            severity:
+              green: 200
+              yellow: 180
+              red: 130
+          - type: gauge
+            name: Battery Voltage
+            entity: sensor.microtek_inverter_battery_voltage
+            min: 10
+            max: 16
+            unit: V
+            severity:
+              green: 13
+              yellow: 11.5
+              red: 10
+          - type: gauge
+            name: Load
+            entity: sensor.microtek_inverter_load
+            min: 0
+            max: 100
+            unit: "%"
+            severity:
+              green: 40
+              yellow: 70
+              red: 90
+          - type: gauge
+            name: Frequency
+            entity: sensor.microtek_inverter_frequency
+            min: 45
+            max: 55
+            unit: Hz
+            severity:
+              green: 49.9
+              yellow: 49
+              red: 45
 
       - type: entities
         title: Power & Output
+        icon: mdi:transmission-tower
         entities:
           - sensor.microtek_inverter_input_voltage
           - sensor.microtek_inverter_output_voltage
-          - sensor.microtek_inverter_frequency
           - sensor.microtek_inverter_battery_voltage
           - sensor.microtek_inverter_charge_current
           - sensor.microtek_inverter_discharge_current
+          - sensor.microtek_inverter_frequency
           - sensor.microtek_inverter_load
+
+      - type: entities
+        title: Battery & Timing
+        icon: mdi:battery-charging
+        entities:
           - sensor.microtek_inverter_charge_time
+          - sensor.microtek_charge_time
           - sensor.microtek_inverter_backup_time
+          - sensor.microtek_backup_time
 
       - type: entities
         title: Control
+        icon: mdi:tune
         entities:
           - select.microtek_inverter_mode
+          - switch.microtek_inverter_pow
           - switch.microtek_inverter_ups
           - switch.microtek_inverter_buzz
           - switch.microtek_inverter_highpwr
           - switch.microtek_inverter_vacation
           - switch.microtek_inverter_mainscut
-          - switch.microtek_inverter_pow
 
       - type: entities
-        title: Status & Faults
+        title: Inverter State
+        icon: mdi:information-outline
         entities:
           - binary_sensor.microtek_inverter_pow
           - binary_sensor.microtek_inverter_ups
           - binary_sensor.microtek_inverter_mains
           - binary_sensor.microtek_inverter_fan
+          - binary_sensor.microtek_inverter_turbochrgsts
+          - binary_sensor.microtek_inverter_highpwr
           - binary_sensor.microtek_inverter_vacation
+          - binary_sensor.microtek_inverter_mainscut
+          - binary_sensor.microtek_inverter_activated
+          - binary_sensor.microtek_inverter_wconn
+          - binary_sensor.microtek_inverter_bconn
+
+      - type: entities
+        title: Warnings
+        icon: mdi:alert
+        entities:
+          - binary_sensor.microtek_inverter_cbtripwarn
+          - binary_sensor.microtek_inverter_wlevelwarn
           - binary_sensor.microtek_inverter_lowbatwarn
+
+      - type: entities
+        title: Faults
+        icon: mdi:alert-octagon
+        entities:
+          - binary_sensor.microtek_inverter_chrgrelay_flt
+          - binary_sensor.microtek_inverter_outvolt_flt
+          - binary_sensor.microtek_inverter_batvolt_flt
+          - binary_sensor.microtek_inverter_backfeed_flt
+          - binary_sensor.microtek_inverter_transf_temp_flt
+          - binary_sensor.microtek_inverter_mosfet_temp_flt
+          - binary_sensor.microtek_inverter_shrtckt_flt
           - binary_sensor.microtek_inverter_overload_flt
