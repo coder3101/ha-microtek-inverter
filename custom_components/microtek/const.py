@@ -7,7 +7,7 @@ from datetime import timedelta
 from homeassistant.components.sensor import SensorEntityDescription
 
 DOMAIN = "microtek"
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 
 PLATFORMS = ["sensor", "binary_sensor", "switch", "select"]
 
