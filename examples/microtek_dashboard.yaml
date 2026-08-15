@@ -86,10 +86,6 @@ views:
         entities:
           - sensor.microtek_inverter_charge_time
           - sensor.microtek_inverter_backup_time
-          # The HH:MM:SS clock versions below require the template sensors from
-          # microtek_template_sensors.yaml; uncomment once they are configured:
-          # - sensor.microtek_charge_time
-          # - sensor.microtek_backup_time
 
       - type: entities
         title: Control
@@ -97,12 +93,14 @@ views:
         entities:
           # select.microtek_inverter_mode is disabled by default; enable it in
           # the entity registry to use. The switches below are enabled by default.
-          - switch.microtek_inverter_pow
-          - switch.microtek_inverter_ups
-          - switch.microtek_inverter_buzz
-          - switch.microtek_inverter_highpwr
-          - switch.microtek_inverter_vacation
-          - switch.microtek_inverter_mainscut
+          # NOTE: `pow` may carry an area prefix (e.g. `switch.bedroom_...`) if
+          # HA resolved an entity_id collision; adjust to match your instance.
+          - entity: switch.bedroom_microtek_inverter_pow
+          - entity: switch.microtek_inverter_ups
+          - entity: switch.microtek_inverter_buzz
+          - entity: switch.microtek_inverter_highpwr
+          - entity: switch.microtek_inverter_vacation
+          - entity: switch.microtek_inverter_mainscut
 
       - type: entities
         title: Inverter State
