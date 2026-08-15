@@ -1,8 +1,10 @@
 {
   "domain": "microtek",
   "name": "Microtek Inverter",
-  "version": "0.2.1",
-  "codeowners": ["@coder3101"],
+  "version": "0.2.2",
+  "codeowners": [
+    "@coder3101"
+  ],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/coder3101/ha-microtek-inverter",

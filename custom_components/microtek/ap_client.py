@@ -29,7 +29,13 @@ class MicrotekAPClient:
         self._uat = uat
         self._base = f"http://{host}:{port}"
 
-    async def _request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
+    async def _request(
+        self,
+        method: str,
+        path: str,
+        body: dict[str, Any] | None = None,
+        parse_json: bool = True,
+    ) -> Any:
         headers = {"User-Agent": USER_AGENT}
         kwargs: dict[str, Any] = {"headers": headers}
         if body is not None:
@@ -48,7 +54,14 @@ class MicrotekAPClient:
 
         if resp.status != 200:
             raise MicrotekAPError(f"HTTP {resp.status}: {text[:200]}")
-        return json.loads(text) if text else {}
+
+        # `/sds` returns plain "ok" — don't try to JSON-parse it.
+        if not parse_json:
+            return {"ok": True}
+        try:
+            return json.loads(text) if text else {}
+        except json.JSONDecodeError as err:
+            raise MicrotekAPError(f"Invalid JSON from device: {text[:200]!r}") from err
 
     async def get_status(self) -> dict[str, Any]:
         """Read the full live status object via ``GET /gds``."""
@@ -57,4 +70,4 @@ class MicrotekAPClient:
     async def set_field(self, key: str, value: str | int | float) -> dict[str, Any]:
         """Set a parameter on the device via ``POST /sds``."""
         payload = {"uat": self._uat, "ts": int(time.time() * 1000), key: value}
-        return await self._request("POST", "/sds", body=payload)
+        return await self._request("POST", "/sds", body=payload, parse_json=False)
