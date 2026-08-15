@@ -7,9 +7,9 @@ from datetime import timedelta
 from homeassistant.components.sensor import SensorEntityDescription
 
 DOMAIN = "microtek"
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
-PLATFORMS = ["sensor", "binary_sensor"]
+PLATFORMS = ["sensor", "binary_sensor", "switch", "select"]
 
 API_BASE = "https://ndp8a9vu2a.execute-api.ap-south-1.amazonaws.com/prod"
 
@@ -17,14 +17,39 @@ DEFAULT_COUNTRY_CODE = "+91"
 DEFAULT_SCAN_INTERVAL = timedelta(seconds=60)
 LOGIN_EXPIRY_MS = 7200000  # 2 h, returned by the API
 
+DEFAULT_AP_HOST = "192.168.4.1"
+DEFAULT_AP_PORT = 80
+
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
 CONF_COUNTRY_CODE = "country_code"
 CONF_HOME_ID = "home_id"
 CONF_DEVICE_ID = "device_id"
 CONF_SCAN_INTERVAL = "scan_interval"
+CONF_AP_HOST = "ap_host"
+CONF_AP_PORT = "ap_port"
+CONF_UAT = "uat"
+CONF_MODEL_NAME = "model_name"
+CONF_MODEL_CODE = "model_code"
+CONF_SERIAL_NUMBER = "serial_number"
 
 USER_AGENT = "sebz/18 CFNetwork/3860.700.1 Darwin/25.6.0"
+
+# Writable 0/1 flags exposed as switches in AP mode (POST /sds). Not every
+# device accepts every field; rejected writes log an error and the switch is
+# marked unavailable. `pow` disables the inverter output, handle with care.
+SWITCH_KEYS: dict[str, str] = {
+    "ups": "mdi:power-plug",
+    "buzz": "mdi:bell",
+    "highpwr": "mdi:rocket-launch",
+    "vacation": "mdi:palm-tree",
+    "mainscut": "mdi:power-plug-off",
+    "pow": "mdi:power",
+}
+
+# Inverter `mode` select choices. Value semantics are not documented; the list
+# below is 0..7 with generic labels.
+MODE_SELECT_OPTIONS: dict[int, str] = {i: f"Mode {i}" for i in range(8)}
 
 # String device_class / unit values are used instead of Home Assistant enums so
 # the integration imports cleanly across many HA versions (the unit enums move
@@ -92,12 +117,14 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         device_class="signal_strength",
         native_unit_of_measurement="dBm",
         state_class="measurement",
+        entity_registry_enabled_default=False,
     ),
     SensorEntityDescription(
         key="chrgtime",
         name="Charge time",
         icon="mdi:timelapse",
         device_class="duration",
+        native_unit_of_measurement="min",
         state_class="measurement",
     ),
     SensorEntityDescription(
@@ -105,22 +132,26 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         name="Backup time",
         icon="mdi:history",
         device_class="duration",
+        native_unit_of_measurement="min",
         state_class="measurement",
     ),
     SensorEntityDescription(
         key="mode",
         name="Inverter mode",
         icon="mdi:power-settings",
+        entity_registry_enabled_default=False,
     ),
     SensorEntityDescription(
         key="chrgsts",
         name="Charge status",
         icon="mdi:battery-charging",
+        entity_registry_enabled_default=False,
     ),
     SensorEntityDescription(
         key="battype",
         name="Battery type",
         icon="mdi:battery",
+        entity_registry_enabled_default=False,
     ),
     SensorEntityDescription(
         key="mCoreVer",

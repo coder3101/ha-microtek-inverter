@@ -8,9 +8,11 @@
 # They format the inverter's raw charge/backup counter as HH:MM:SS so you can
 # show it as a clock/timer on the dashboard.
 #
-# UNIT NOTE: the raw value from the inverter is assumed to be MINUTES. If your
-# device reports SECONDS instead, remove/or change the two `* 60` multipliers
-# (i.e. `X * 1`).
+# UNIT NOTE: the inverter's `chrgtime` / `bkptime` fields are MINUTES (see the
+# protocol docs and the integration's sensor units). The raw minute value is
+# multiplied by 60 to get seconds for the HH:MM:SS clock.
+#   charge_time -> minutes until fully charged
+#   backup_time -> minutes of backup remaining
 template:
   - sensor:
       - name: "Microtek Charge Time"

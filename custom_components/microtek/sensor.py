@@ -1,4 +1,4 @@
-"""Sensor platform for the Microtek Inverter integration (cloud read-only)."""
+"""Sensor platform for the Microtek Inverter integration."""
 
 from __future__ import annotations
 

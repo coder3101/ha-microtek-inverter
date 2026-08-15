@@ -5,6 +5,11 @@
 # If your entity_ids differ (e.g. the device got renamed), find them under
 # Settings -> Devices & Services -> Microtek Inverter and adjust the references.
 #
+# UNIT NOTE (sensor values from the inverter):
+#   * charge_time  -> MINUTES until fully charged
+#   * backup_time  -> MINUTES of backup remaining
+#   (voltage in V, currents in A, frequency in Hz, rssi in dBm)
+#
 # "Microtek State" (template sensor) must exist for the clock card to show;
 # see microtek_template_sensors.yaml in this folder.
 title: Microtek Inverter
@@ -57,12 +62,12 @@ views:
           red: 45
 
       - type: sensor
-        name: Charge Time
+        name: Charge Time (min)
         entity: sensor.microtek_charge_time
         icon: mdi:timelapse
 
       - type: sensor
-        name: Backup Time
+        name: Backup Time (min)
         entity: sensor.microtek_backup_time
         icon: mdi:history
 
@@ -76,6 +81,19 @@ views:
           - sensor.microtek_inverter_charge_current
           - sensor.microtek_inverter_discharge_current
           - sensor.microtek_inverter_load
+          - sensor.microtek_inverter_charge_time
+          - sensor.microtek_inverter_backup_time
+
+      - type: entities
+        title: Control
+        entities:
+          - select.microtek_inverter_mode
+          - switch.microtek_inverter_ups
+          - switch.microtek_inverter_buzz
+          - switch.microtek_inverter_highpwr
+          - switch.microtek_inverter_vacation
+          - switch.microtek_inverter_mainscut
+          - switch.microtek_inverter_pow
 
       - type: entities
         title: Status & Faults

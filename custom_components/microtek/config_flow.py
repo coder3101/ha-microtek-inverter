@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 import aiohttp
@@ -13,10 +14,18 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
+    CONF_AP_HOST,
+    CONF_AP_PORT,
     CONF_COUNTRY_CODE,
     CONF_DEVICE_ID,
     CONF_HOME_ID,
+    CONF_MODEL_CODE,
+    CONF_MODEL_NAME,
     CONF_SCAN_INTERVAL,
+    CONF_SERIAL_NUMBER,
+    CONF_UAT,
+    DEFAULT_AP_HOST,
+    DEFAULT_AP_PORT,
     DEFAULT_COUNTRY_CODE,
     DOMAIN,
 )
@@ -108,20 +117,38 @@ class MicrotekConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await self.async_set_unique_id(device_id, raise_on_progress=False)
             self._abort_if_unique_id_configured()
 
+            thing = next((t for t in self._things if t.get("id") == device_id), None)
+            user_config = json.loads(thing.get("user_config") or "{}") if thing else {}
+
             data = {
                 **self._creds,
                 CONF_HOME_ID: self._home_id,
                 CONF_DEVICE_ID: device_id,
+                CONF_AP_HOST: user_input.get(CONF_AP_HOST, DEFAULT_AP_HOST),
+                CONF_AP_PORT: user_input.get(CONF_AP_PORT, DEFAULT_AP_PORT),
+                CONF_UAT: user_config.get("uat") if thing else None,
+                CONF_MODEL_NAME: (thing or {}).get("model_name"),
+                CONF_MODEL_CODE: (thing or {}).get("model_code"),
+                CONF_SERIAL_NUMBER: user_config.get("serial_number"),
             }
-            return self.async_create_entry(
-                title=f"Microtek Inverter ({device_id})", data=data
-            )
+            if not data[CONF_UAT]:
+                errors["base"] = "cannot_connect"
+            else:
+                return self.async_create_entry(
+                    title=f"Microtek Inverter ({device_id})", data=data
+                )
 
         choices = {
             t["id"]: f"{t.get('model_name', 'Inverter')} ({t['id']})"
             for t in self._things
         }
-        schema = vol.Schema({vol.Required(CONF_DEVICE_ID): vol.In(choices)})
+        schema = vol.Schema(
+            {
+                vol.Required(CONF_DEVICE_ID): vol.In(choices),
+                vol.Optional(CONF_AP_HOST, default=DEFAULT_AP_HOST): str,
+                vol.Optional(CONF_AP_PORT, default=DEFAULT_AP_PORT): int,
+            }
+        )
         return self.async_show_form(step_id="device", data_schema=schema, errors=errors)
 
 

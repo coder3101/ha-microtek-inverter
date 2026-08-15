@@ -1,12 +1,12 @@
 {
   "domain": "microtek",
   "name": "Microtek Inverter",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "codeowners": ["@coder3101"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/coder3101/ha-microtek-inverter",
   "issue_tracker": "https://github.com/coder3101/ha-microtek-inverter/issues",
-  "iot_class": "cloud_polling",
+  "iot_class": "local_polling",
   "requirements": []
 }

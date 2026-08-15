@@ -5,31 +5,31 @@ from __future__ import annotations
 import aiohttp
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
+from .ap_client import MicrotekAPClient
 from .const import (
-    CONF_COUNTRY_CODE,
-    CONF_DEVICE_ID,
-    CONF_HOME_ID,
-    CONF_USERNAME,
-    DEFAULT_COUNTRY_CODE,
+    CONF_AP_HOST,
+    CONF_AP_PORT,
+    CONF_UAT,
+    DEFAULT_AP_HOST,
+    DEFAULT_AP_PORT,
     DOMAIN,
     PLATFORMS,
 )
 from .coordinator import MicrotekDataUpdateCoordinator
-from .microtek_client import MicrotekClient
 
 _SESSION_KEY = f"{DOMAIN}_sessions"
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = aiohttp.ClientSession()
-    client = MicrotekClient(
+    client = MicrotekAPClient(
         session,
-        entry.data[CONF_USERNAME],
-        entry.data[CONF_PASSWORD],
-        entry.data.get(CONF_COUNTRY_CODE, DEFAULT_COUNTRY_CODE),
+        entry.data[CONF_UAT],
+        entry.data.get(CONF_AP_HOST, DEFAULT_AP_HOST),
+        entry.data.get(CONF_AP_PORT, DEFAULT_AP_PORT),
     )
     coordinator = MicrotekDataUpdateCoordinator(hass, entry, client)
     await coordinator.async_config_entry_first_refresh()

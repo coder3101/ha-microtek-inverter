@@ -1,16 +1,21 @@
-"""Binary sensor platform for the Microtek Inverter integration."""
+"""Switch platform for the Microtek Inverter integration (AP write)."""
 
 from __future__ import annotations
 
-from homeassistant.components.binary_sensor import BinarySensorEntity
+import logging
+
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import BINARY_SENSORS, DOMAIN
+from .ap_client import MicrotekAPError
+from .const import DOMAIN, SWITCH_KEYS
 from .coordinator import MicrotekDataUpdateCoordinator
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -19,29 +24,19 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator: MicrotekDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities(MicrotekBinarySensor(coordinator, key) for key in BINARY_SENSORS)
+    async_add_entities(MicrotekSwitch(coordinator, key) for key in SWITCH_KEYS)
 
 
-class MicrotekBinarySensor(CoordinatorEntity[MicrotekDataUpdateCoordinator], BinarySensorEntity):
-    """Binary sensor for a 0/1 flag or fault in the inverter's live state."""
+class MicrotekSwitch(CoordinatorEntity[MicrotekDataUpdateCoordinator], SwitchEntity):
+    """Switch that writes a 0/1 flag to the inverter via ``POST /sds``."""
 
-    def __init__(
-        self,
-        coordinator: MicrotekDataUpdateCoordinator,
-        key: str,
-    ) -> None:
+    def __init__(self, coordinator: MicrotekDataUpdateCoordinator, key: str) -> None:
         super().__init__(coordinator)
         self._key = key
         self._attr_has_entity_name = True
         self._attr_unique_id = f"{coordinator.device_id}_{key}"
         self._attr_name = key.replace("_", " ").title()
-        self._attr_icon = BINARY_SENSORS.get(key, "mdi:information-outline")
-        if key.endswith("_flt"):
-            self._attr_device_class = "problem"
-        elif key == "mains":
-            self._attr_device_class = "power"
-        elif key == "wConn":
-            self._attr_device_class = "connectivity"
+        self._attr_icon = SWITCH_KEYS[key]
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -59,3 +54,23 @@ class MicrotekBinarySensor(CoordinatorEntity[MicrotekDataUpdateCoordinator], Bin
         if value is None:
             return None
         return bool(int(value)) if str(value).lstrip("-").isdigit() else bool(value)
+
+    async def async_turn_on(self, **kwargs) -> None:
+        await self._async_set(1)
+
+    async def async_turn_off(self, **kwargs) -> None:
+        await self._async_set(0)
+
+    async def _async_set(self, value: int) -> None:
+        state = self.coordinator.data.setdefault("state", {})
+        old = state.get(self._key)
+        state[self._key] = value
+        self.async_write_ha_state()
+        try:
+            await self.coordinator.client.set_field(self._key, value)
+        except MicrotekAPError as err:
+            _LOGGER.error("Failed to set %s=%s on inverter: %s", self._key, value, err)
+            if old is not None:
+                state[self._key] = old
+            self.async_write_ha_state()
+        await self.coordinator.async_refresh()
