@@ -90,7 +90,7 @@ entity id is `<device_name>_<key>` (e.g. `sensor.microtek_inverter_involt` →
 4. Optionally adjust the **AP host** and **AP port** (defaults `192.168.4.1:80`).
 5. Done — sensor entities appear under the inverter device.
 
-The polling interval can be changed in the integration's **Options** (default 60 s).
+The polling interval can be changed in the integration's **Options** (default 15 s).
 
 ## Network requirements (AP mode)
 

@@ -14,7 +14,7 @@ PLATFORMS = ["sensor", "binary_sensor", "switch", "select"]
 API_BASE = "https://ndp8a9vu2a.execute-api.ap-south-1.amazonaws.com/prod"
 
 DEFAULT_COUNTRY_CODE = "+91"
-DEFAULT_SCAN_INTERVAL = timedelta(seconds=60)
+DEFAULT_SCAN_INTERVAL = timedelta(seconds=15)
 LOGIN_EXPIRY_MS = 7200000  # 2 h, returned by the API
 
 DEFAULT_AP_HOST = "192.168.4.1"
